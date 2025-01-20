@@ -4,6 +4,7 @@ from configs.configuration import Configuration
 from services.dm_api.dm_api_facade import DMApiAccount
 from services.mailhog.mailhog_facade import MailHogAPI
 from helpers.account_helper import AccountHelper
+from helpers.login_helper import LoginHelper
 
 # Инициализация логгера при старте тестов
 setup_logging()
@@ -63,3 +64,8 @@ def account_helper(dm_api_facade, mailhog_facade):
     Хелпер для работы с аккаунтом, использует фасады
     """
     return AccountHelper(dm_api_facade, mailhog_facade)
+
+
+@pytest.fixture
+def login_helper(dm_api_facade):
+    return LoginHelper(dm_api_facade)

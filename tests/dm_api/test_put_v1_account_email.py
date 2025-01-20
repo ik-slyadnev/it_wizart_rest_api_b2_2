@@ -1,7 +1,7 @@
 import json
 
 class TestPutV1AccountEmail:
-    def test_put_v1_account_email(self, account_helper, dm_api_facade, mailhog_facade):
+    def test_put_v1_account_email(self, account_helper, dm_api_facade, mailhog_facade, login_helper):
         """
         Тест на смену email пользователя
 
@@ -13,14 +13,13 @@ class TestPutV1AccountEmail:
         5. Получение и активация токена подтверждения
         6. Проверка возможности входа после подтверждения
         """
-
+        # Регистрация пользователя
         user = account_helper.register_new_user()
-        response = dm_api_facade.login_api.post_v1_account_login(
-            login=user['login'],
-            password=user['password']
-        )
+
+        response = login_helper.login(user['login'], user['password'])
         assert response.status_code == 200
 
+        # Смена email
         new_email = f"new_{user['login']}@example.com"
         response = dm_api_facade.account_api.put_v1_account_email(
             login=user['login'],
@@ -29,29 +28,14 @@ class TestPutV1AccountEmail:
         )
         assert response.status_code == 200
 
-
-        response = dm_api_facade.login_api.post_v1_account_login(
-            login=user['login'],
-            password=user['password']
-        )
+        # Проверка невозможности входа до подтверждения
+        response = login_helper.login(user['login'], user['password'])
         assert response.status_code == 403
 
+        # Получение токена и активация нового email
+        email_change_token = account_helper.get_registration_token(user['login'])
+        account_helper.activate_account(email_change_token)
 
-        messages = mailhog_facade.mailhog_api.get_api_v2_messages(limit=1)
-        email_change_token = None
-        for item in messages['items']:
-            message_data = json.loads(item['Content']['Body'])
-            if message_data.get('Login') == user['login']:
-                email_change_token = message_data['ConfirmationLinkUrl'].split('/')[-1]
-                break
-
-        assert email_change_token is not None, "Токен для смены email не найден"
-
-        response = dm_api_facade.account_api.put_v1_account_token(token=email_change_token)
-        assert response.status_code == 200
-
-        response = dm_api_facade.login_api.post_v1_account_login(
-            login=user['login'],
-            password=user['password']
-        )
+        # Проверка возможности входа после подтверждения
+        response = login_helper.login(user['login'], user['password'])
         assert response.status_code == 200
