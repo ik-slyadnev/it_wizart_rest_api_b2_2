@@ -5,8 +5,6 @@ from requests import session
 from configs.configuration import Configuration
 
 
-
-
 class RestClient:
     def __init__(self, configuration: Configuration):
         self.host = configuration.host

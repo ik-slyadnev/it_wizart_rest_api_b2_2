@@ -1,4 +1,4 @@
-from configs.rest_client import RestClient
+from common.rest_client import RestClient
 
 class LoginApi(RestClient):
     def post_v1_account_login(self, login: str, password: str, remember_me: bool = True):

@@ -1,8 +1,8 @@
 import pytest
-from configs.logger import setup_logging
+from common.logger import setup_logging
 from configs.configuration import Configuration
-from facades.dm_api_facade import DMApiAccount
-from facades.mailhog_facade import MailHogAPI
+from services.dm_api.dm_api_facade import DMApiAccount
+from services.mailhog.mailhog_facade import MailHogAPI
 from helpers.account_helper import AccountHelper
 
 # Инициализация логгера при старте тестов

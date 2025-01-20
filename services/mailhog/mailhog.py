@@ -1,18 +1,17 @@
-from configs.rest_client import RestClient
+from common.rest_client import RestClient
+
 
 class MailhogApi(RestClient):
-    def get_api_v2_messages(self, limit: str = '2'):
+    def get_api_v2_messages(self, limit: str = '2') -> dict:
         """
-        Получение писем пользователей
+        Получение писем пользователей из Mailhog
 
-        :param limit: Количество писем
-        :return: Response
+        :param limit: Количество писем (по умолчанию '2')
+        :return: Словарь с сообщениями
         """
-        params = {
-            'limit': limit
-        }
         response = self.get(
             path="/api/v2/messages",
-            params=params
+            params={'limit': limit}
         )
-        return response
+        assert response.status_code == 200, "Не удалось получить письма"
+        return response.json()

@@ -1,3 +1,5 @@
+
+
 class TestPutV1AccountToken:
     def test_put_v1_account_token(self, account_helper):
         # Регистрация пользователя через хелпер, который автоматически активирует токен

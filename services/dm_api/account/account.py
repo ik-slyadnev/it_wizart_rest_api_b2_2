@@ -1,5 +1,5 @@
-from configs.rest_client import RestClient
-from configs.configuration import Configuration
+from common.rest_client import RestClient
+
 
 class AccountApi(RestClient):
     def post_v1_account(self, login: str, email: str, password: str):
@@ -53,3 +53,4 @@ class AccountApi(RestClient):
             json=payload
         )
         return response
+
